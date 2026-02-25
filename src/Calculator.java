@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import javax.swing.*;
 
 public class Calculator extends JFrame {
@@ -73,19 +74,16 @@ public class Calculator extends JFrame {
                 public void actionPerformed(ActionEvent actionEvent) {
                     if (finalI == 7)
                         area.setText("");
-                    else if (finalI == 6) {
-                        String lhs;
-                        String rhs;
+                    if (finalI == 6) {
                         try {
-                            lhs = area.getText().substring(0, area.getText().indexOf(operator + ""));
-                            rhs = area.getText().substring(area.getText().indexOf(operator + "") + 1, area.getText().length());
-                            switch (operator) {
-                                case '+': area.append(" = " + ((Double.parseDouble(lhs) + Double.parseDouble(rhs)))); break;
-                                case '-': area.append(" = " + ((Double.parseDouble(lhs) - Double.parseDouble(rhs)))); break;
-                                case '/': area.append(" = " + ((Double.parseDouble(lhs) / Double.parseDouble(rhs)))); break;
-                                case '*': area.append(" = " + ((Double.parseDouble(lhs) * Double.parseDouble(rhs)))); break;
-                                default: area.setText(" "); break;
-                            }
+                            String expression = area.getText();
+                            ShuntingYardParser parser = new ShuntingYardParser();
+                            Evaluator evaluator = new Evaluator();
+
+                            List<String> Lista = parser.parse(expression);
+                            double result = evaluator.evaluate(Lista);
+
+                            area.setText(String.valueOf(result));
                         } catch (Exception e) {
                             area.setText(" !!!Probleme!!! ");
                         }
